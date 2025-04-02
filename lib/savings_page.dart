@@ -9,17 +9,85 @@ class SavingsPage extends StatefulWidget {
 
 class _SavingsPageState extends State<SavingsPage> {
   List<Map<String, dynamic>> savings = [];
-  List<Map<String, String>> savingHistory = [
-    {"date": "01.01.2024 12:25", "amount": "10.-"},
-    {"date": "01.01.2024 12:25", "amount": "10.-"},
-    {"date": "01.01.2024 12:25", "amount": "10.-"},
-  ];
+  List<Map<String, String>> savingHistory = [];
 
-    @override
-  void initState() {
-    super.initState();
-    _loadSavings();
+@override
+void initState() {
+  super.initState();
+  _loadSavings();
+  _loadSavingHistory();
+}
+
+void _addToHistory(int amount) {
+  String formattedDate = DateTime.now().toString().substring(0, 16); 
+  setState(() {
+    savingHistory.add({
+      "date": formattedDate,
+      "amount": "$amount.-",
+    });
+  });
+  _saveSavingHistory(); 
+}
+
+Future<void> _loadSavingHistory() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? historyJson = prefs.getString('savingHistory');
+  if (historyJson != null) {
+    setState(() {
+      savingHistory = List<Map<String, String>>.from(json.decode(historyJson));
+    });
   }
+}
+
+Future<void> _saveSavingHistory() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String historyJson = json.encode(savingHistory);
+  await prefs.setString('savingHistory', historyJson);
+}
+
+Future<void> _saveSavings() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String savingsJson = json.encode(savings);
+  await prefs.setString('savings', savingsJson);
+}
+
+void _addMoney(int index, int amount) {
+  setState(() {
+    savings[index]["saved"] += amount; 
+  });
+  _addToHistory(amount);
+  _saveSavings();
+}
+
+void _showAddMoneyDialog(int index) {
+  TextEditingController amountController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("Add Money"),
+      content: TextField(
+        controller: amountController,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(labelText: "Amount to save"),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            int amount = int.parse(amountController.text);
+            _addMoney(index, amount); 
+            Navigator.pop(context);
+          },
+          child: Text("Add"),
+        ),
+      ],
+    ),
+  );
+}
+
 
   void _showSavingHistory() {
     showDialog(
@@ -48,36 +116,6 @@ class _SavingsPageState extends State<SavingsPage> {
     );
   }
 
-    void _showAddMoneyDialog(int index) {
-    TextEditingController amountController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Add Money"),
-        content: TextField(
-          controller: amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: "Amount to save"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                savings[index]["saved"] += int.parse(amountController.text);
-              });
-              Navigator.pop(context);
-            },
-            child: Text("Add"),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _loadSavings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savingsJson = prefs.getString('savings');
@@ -86,12 +124,6 @@ class _SavingsPageState extends State<SavingsPage> {
         savings = List<Map<String, dynamic>>.from(json.decode(savingsJson));
       });
     }
-  }
-
-  Future<void> _saveSavings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String savingsJson = json.encode(savings);
-    await prefs.setString('savings', savingsJson);
   }
 
   void _addSaving(String title, int goal) {
@@ -105,13 +137,6 @@ class _SavingsPageState extends State<SavingsPage> {
     setState(() {
       savings[index]["title"] = newTitle;
       savings[index]["goal"] = newGoal;
-      _saveSavings();
-    });
-  }
-
-  void _addMoney(int index, int amount) {
-    setState(() {
-      savings[index]["saved"] += amount;
       _saveSavings();
     });
   }
