@@ -74,6 +74,50 @@ class _SavingsPageState extends State<SavingsPage> {
     );
   }
 
+  void _showEditSavingDialog(int index) {
+    TextEditingController titleController =
+        TextEditingController(text: savings[index]["title"]);
+    TextEditingController amountController =
+        TextEditingController(text: savings[index]["goal"].toString());
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Edit Saving"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: "Title"),
+            ),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Goal Amount"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                savings[index]["title"] = titleController.text;
+                savings[index]["goal"] = int.parse(amountController.text);
+              });
+              Navigator.pop(context);
+            },
+            child: Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showCreateNewSaving() {
     TextEditingController titleController = TextEditingController();
     TextEditingController amountController = TextEditingController();
@@ -118,8 +162,19 @@ class _SavingsPageState extends State<SavingsPage> {
     );
   }
 
+  void _deleteSaving(int index) {
+    setState(() {
+      savings.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> ongoingSavings =
+        savings.where((s) => s["saved"] < s["goal"]).toList();
+    List<Map<String, dynamic>> doneSavings =
+        savings.where((s) => s["saved"] >= s["goal"]).toList();
+
     return Scaffold(
       appBar: AppBar(title: Text("Savings")),
       body: Padding(
@@ -127,26 +182,24 @@ class _SavingsPageState extends State<SavingsPage> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                itemCount: savings.length,
-                itemBuilder: (context, index) {
-                  final saving = savings[index];
-                  bool isDone = saving["saved"] >= saving["goal"];
-                  return Card(
-                    child: ListTile(
-                      title: Text(saving["title"]),
-                      subtitle: Text(
-                        "Saved: ${saving["saved"]} / ${saving["goal"]}",
-                        style: TextStyle(
-                            color: isDone ? Colors.green : Colors.red),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () => _showAddMoneyDialog(index),
-                      ),
-                    ),
-                  );
-                },
+              child: ListView(
+                children: [
+                  if (ongoingSavings.isNotEmpty) ...[
+                    Text("Ongoing", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ...ongoingSavings.map((saving) {
+                      int index = savings.indexOf(saving);
+                      return _buildSavingCard(saving, index);
+                    }).toList(),
+                  ],
+                  if (doneSavings.isNotEmpty) ...[
+                    SizedBox(height: 20),
+                    Text("Done", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ...doneSavings.map((saving) {
+                      int index = savings.indexOf(saving);
+                      return _buildSavingCard(saving, index);
+                    }).toList(),
+                  ],
+                ],
               ),
             ),
             SizedBox(height: 10),
@@ -158,6 +211,37 @@ class _SavingsPageState extends State<SavingsPage> {
             ElevatedButton(
               onPressed: _showCreateNewSaving,
               child: Text("Create New Saving"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSavingCard(Map<String, dynamic> saving, int index) {
+    bool isDone = saving["saved"] >= saving["goal"];
+
+    return Card(
+      child: ListTile(
+        title: Text(saving["title"]),
+        subtitle: Text(
+          "Saved: ${saving["saved"]} / ${saving["goal"]}",
+          style: TextStyle(color: isDone ? Colors.green : Colors.red),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => _showEditSavingDialog(index),
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => _showAddMoneyDialog(index),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () => _deleteSaving(index),
             ),
           ],
         ),
