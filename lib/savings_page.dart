@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class SavingsPage extends StatefulWidget {
   @override
@@ -6,16 +8,18 @@ class SavingsPage extends StatefulWidget {
 }
 
 class _SavingsPageState extends State<SavingsPage> {
-  List<Map<String, dynamic>> savings = [
-    {"title": "Cruise", "goal": 4500, "saved": 4200},
-    {"title": "Car", "goal": 45734, "saved": 12420},
-  ];
-
+  List<Map<String, dynamic>> savings = [];
   List<Map<String, String>> savingHistory = [
     {"date": "01.01.2024 12:25", "amount": "10.-"},
     {"date": "01.01.2024 12:25", "amount": "10.-"},
     {"date": "01.01.2024 12:25", "amount": "10.-"},
   ];
+
+    @override
+  void initState() {
+    super.initState();
+    _loadSavings();
+  }
 
   void _showSavingHistory() {
     showDialog(
@@ -44,7 +48,7 @@ class _SavingsPageState extends State<SavingsPage> {
     );
   }
 
-  void _showAddMoneyDialog(int index) {
+    void _showAddMoneyDialog(int index) {
     TextEditingController amountController = TextEditingController();
     showDialog(
       context: context,
@@ -74,97 +78,48 @@ class _SavingsPageState extends State<SavingsPage> {
     );
   }
 
-  void _showEditSavingDialog(int index) {
-    TextEditingController titleController =
-        TextEditingController(text: savings[index]["title"]);
-    TextEditingController amountController =
-        TextEditingController(text: savings[index]["goal"].toString());
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Edit Saving"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: "Title"),
-            ),
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Goal Amount"),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                savings[index]["title"] = titleController.text;
-                savings[index]["goal"] = int.parse(amountController.text);
-              });
-              Navigator.pop(context);
-            },
-            child: Text("Save"),
-          ),
-        ],
-      ),
-    );
+  Future<void> _loadSavings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savingsJson = prefs.getString('savings');
+    if (savingsJson != null) {
+      setState(() {
+        savings = List<Map<String, dynamic>>.from(json.decode(savingsJson));
+      });
+    }
   }
 
-  void _showCreateNewSaving() {
-    TextEditingController titleController = TextEditingController();
-    TextEditingController amountController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Create new Saving"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: "Title"),
-            ),
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Amount to save"),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                savings.add({
-                  "title": titleController.text,
-                  "goal": int.parse(amountController.text),
-                  "saved": 0
-                });
-              });
-              Navigator.pop(context);
-            },
-            child: Text("Create"),
-          ),
-        ],
-      ),
-    );
+  Future<void> _saveSavings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String savingsJson = json.encode(savings);
+    await prefs.setString('savings', savingsJson);
+  }
+
+  void _addSaving(String title, int goal) {
+    setState(() {
+      savings.add({"title": title, "goal": goal, "saved": 0});
+      _saveSavings();
+    });
+  }
+
+  void _editSaving(int index, String newTitle, int newGoal) {
+    setState(() {
+      savings[index]["title"] = newTitle;
+      savings[index]["goal"] = newGoal;
+      _saveSavings();
+    });
+  }
+
+  void _addMoney(int index, int amount) {
+    setState(() {
+      savings[index]["saved"] += amount;
+      _saveSavings();
+    });
   }
 
   void _deleteSaving(int index) {
     setState(() {
       savings.removeAt(index);
+      _saveSavings();
     });
   }
 
@@ -203,13 +158,13 @@ class _SavingsPageState extends State<SavingsPage> {
               ),
             ),
             SizedBox(height: 10),
-            ElevatedButton(
+                        ElevatedButton(
               onPressed: _showSavingHistory,
               child: Text("See Saving History"),
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _showCreateNewSaving,
+              onPressed: () => _showCreateNewSavingDialog(),
               child: Text("Create New Saving"),
             ),
           ],
@@ -220,7 +175,6 @@ class _SavingsPageState extends State<SavingsPage> {
 
   Widget _buildSavingCard(Map<String, dynamic> saving, int index) {
     bool isDone = saving["saved"] >= saving["goal"];
-
     return Card(
       child: ListTile(
         title: Text(saving["title"]),
@@ -245,6 +199,62 @@ class _SavingsPageState extends State<SavingsPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showCreateNewSavingDialog() {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController amountController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Create new Saving"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: titleController, decoration: InputDecoration(labelText: "Title")),
+            TextField(controller: amountController, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Amount to save")),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          ElevatedButton(
+            onPressed: () {
+              _addSaving(titleController.text, int.parse(amountController.text));
+              Navigator.pop(context);
+            },
+            child: Text("Create"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditSavingDialog(int index) {
+    TextEditingController titleController = TextEditingController(text: savings[index]["title"]);
+    TextEditingController amountController = TextEditingController(text: savings[index]["goal"].toString());
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Edit Saving"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: titleController, decoration: InputDecoration(labelText: "Title")),
+            TextField(controller: amountController, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Goal Amount")),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          ElevatedButton(
+            onPressed: () {
+              _editSaving(index, titleController.text, int.parse(amountController.text));
+              Navigator.pop(context);
+            },
+            child: Text("Save"),
+          ),
+        ],
       ),
     );
   }
