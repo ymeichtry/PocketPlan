@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';  // Stelle sicher, dass die Datei existiert
-import 'savings_page.dart';
-import 'settings_page.dart';
+import 'package:pocketplan/pin_login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pocketplan/home_page.dart';
+import 'package:pocketplan/savings_page.dart';
+import 'package:pocketplan/settings_page.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool requirePassword = prefs.getBool("requirePassword") ?? false;
+  String? savedPassword = prefs.getString("userPassword");
+
+  runApp(MyApp(
+    showLogin: requirePassword && savedPassword != null && savedPassword.isNotEmpty,
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  final bool showLogin;
+
+  MyApp({required this.showLogin});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      home: showLogin ? PinLoginPage() : MainPage(),
     );
   }
 }
@@ -47,6 +60,9 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        backgroundColor: Color(0xFF263238),
+        selectedItemColor: Colors.green[700],
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: "Savings"),
