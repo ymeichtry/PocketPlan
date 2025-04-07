@@ -13,12 +13,13 @@ class _PinLoginPageState extends State<PinLoginPage> {
   String? _savedPin;
   final LocalAuthentication auth = LocalAuthentication();
 
-  @override
-  void initState() {
-    super.initState();
-    _loadPin();
-    _checkBiometrics();
-  }
+@override
+void initState() {
+  super.initState();
+  _loadPin().then((_) {
+    _checkBiometrics(); // Trigger after loading saved PIN
+  });
+}
 
   Future<void> _loadPin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,16 +62,31 @@ class _PinLoginPageState extends State<PinLoginPage> {
     );
   }
 
-  Future<void> _checkBiometrics() async {
+Future<void> _checkBiometrics() async {
+  try {
     bool canCheck = await auth.canCheckBiometrics;
-    if (canCheck) {
+    bool isDeviceSupported = await auth.isDeviceSupported();
+
+    if (canCheck && isDeviceSupported) {
       bool authenticated = await auth.authenticate(
         localizedReason: 'Authenticate to access PocketPlanner',
-        options: AuthenticationOptions(biometricOnly: true),
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
       );
-      if (authenticated) _navigateToHome();
+
+      if (authenticated) {
+        _navigateToHome();
+      }
     }
+  } catch (e) {
+    debugPrint('Biometric auth error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Biometric authentication failed")),
+    );
   }
+}
 
   Widget _buildCircle(bool filled) {
     return Container(
@@ -157,11 +173,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
               children: [
                 TextButton(
                   onPressed: _checkBiometrics,
-                  child: Text("Use Face ID", style: TextStyle(color: Colors.blue)),
-                ),
-                TextButton(
-                  onPressed: _checkBiometrics,
-                  child: Text("Use Fingerprint", style: TextStyle(color: Colors.blue)),
+                  child: Text("Use Biometrics", style: TextStyle(color: Colors.blue)),
                 ),
               ],
             ),
