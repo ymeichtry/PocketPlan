@@ -11,54 +11,103 @@ class _SavingsPageState extends State<SavingsPage> {
   List<Map<String, dynamic>> savings = [];
   List<Map<String, String>> savingHistory = [];
 
-@override
-void initState() {
-  super.initState();
-  _loadSavings();
-  _loadSavingHistory();
-}
+  @override
+  void initState() {
+    super.initState();
+    _loadSavings();
+    _loadSavingHistory();
+  }
 
-void _addToHistory(int amount) {
-  String formattedDate = DateTime.now().toString().substring(0, 16); 
-  setState(() {
-    savingHistory.add({
+  void _addToHistory(int amount, String savingTitle) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? historyJson = prefs.getString('savingHistory');
+    List<Map<String, String>> currentHistory = [];
+
+    if (historyJson != null) {
+      List<dynamic> decoded = json.decode(historyJson);
+      currentHistory = decoded.map((e) => Map<String, String>.from(e)).toList();
+    }
+
+    String formattedDate = DateTime.now().toString().substring(0, 16);
+    Map<String, String> newEntry = {
       "date": formattedDate,
-      "amount": "$amount.-",
-    });
-  });
-  _saveSavingHistory(); 
-}
+      "amount": amount.toString(),
+      "savingTitle": savingTitle
+    };
 
-Future<void> _loadSavingHistory() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? historyJson = prefs.getString('savingHistory');
-  if (historyJson != null) {
+    currentHistory.insert(0, newEntry);
+
+    await prefs.setString('savingHistory', json.encode(currentHistory));
+
     setState(() {
-      savingHistory = List<Map<String, String>>.from(json.decode(historyJson));
+      savingHistory = currentHistory;
     });
   }
-}
 
-Future<void> _saveSavingHistory() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String historyJson = json.encode(savingHistory);
-  await prefs.setString('savingHistory', historyJson);
-}
+  Future<void> _loadSavingHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? historyJson = prefs.getString('savingHistory');
+    if (historyJson != null) {
+      setState(() {
+        savingHistory = List<Map<String, String>>.from(
+          json.decode(historyJson),
+        );
+      });
+    }
+  }
 
-Future<void> _saveSavings() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String savingsJson = json.encode(savings);
-  await prefs.setString('savings', savingsJson);
-}
+  Future<void> _saveSavings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String savingsJson = json.encode(savings);
+    await prefs.setString('savings', savingsJson);
+  }
 
-void _addMoney(int index, int amount) {
-  setState(() {
-    savings[index]["saved"] += amount; 
-  });
-  _addToHistory(amount);
-  _saveSavings();
-}
+  void _addMoney(int index, int amount) async {
+    if (!await _canAddAmount(amount)) return;
 
+    setState(() {
+      savings[index]["saved"] += amount;
+    });
+
+    _addToHistory(amount, savings[index]["title"]);
+    _saveSavings();
+  }
+
+  Future<bool> _canAddAmount(int amount) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int dailyLimit = prefs.getInt("dailyLimit") ?? 0;
+    int monthlyLimit = prefs.getInt("monthlyLimit") ?? 0;
+
+    DateTime now = DateTime.now();
+    String today = now.toIso8601String().substring(0, 10);
+    String thisMonth = "${now.year}-${now.month}";
+
+    List<Map<String, String>> todayHistory = savingHistory
+        .where((entry) => entry["date"]!.startsWith(today))
+        .toList();
+    List<Map<String, String>> monthlyHistory = savingHistory
+        .where((entry) => entry["date"]!.substring(0, 7) == thisMonth)
+        .toList();
+
+    int dailyTotal = todayHistory.fold(0, (sum, item) => sum + int.parse(item["amount"]!));
+    int monthlyTotal = monthlyHistory.fold(0, (sum, item) => sum + int.parse(item["amount"]!));
+
+    if (dailyLimit > 0 && (dailyTotal + amount) > dailyLimit) {
+      _showError("Daily limit of $dailyLimit exceeded!");
+      return false;
+    }
+    if (monthlyLimit > 0 && (monthlyTotal + amount) > monthlyLimit) {
+      _showError("Monthly limit of $monthlyLimit exceeded!");
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+  
 void _showAddMoneyDialog(int index) {
   TextEditingController amountController = TextEditingController();
   showDialog(
@@ -77,44 +126,35 @@ void _showAddMoneyDialog(int index) {
         ),
         ElevatedButton(
           onPressed: () {
-            int amount = int.parse(amountController.text);
-            _addMoney(index, amount); 
+            int amount = int.tryParse(amountController.text) ?? 0;
+            int remainingAmount = savings[index]["goal"] - savings[index]["saved"];
+
+            if (amount <= 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Please enter a valid amount.")),
+              );
+              return;
+            }
+
+            if (amount > remainingAmount) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("You can only add up to $remainingAmount!")),
+              );
+              return;
+            }
+
+            _addMoney(index, amount);
+            HapticFeedback.mediumImpact();
             Navigator.pop(context);
+            HapticFeedback.lightImpact();
+            
           },
-          child: Text("Add"),
+          child: Text("Add", style: TextStyle(color: Colors.black)),
         ),
       ],
     ),
   );
 }
-
-
-  void _showSavingHistory() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Saving History"),
-        content: Container(
-          width: double.maxFinite,
-          child: ListView(
-            shrinkWrap: true,
-            children: savingHistory
-                .map((entry) => ListTile(
-                      title: Text(entry["date"]!),
-                      trailing: Text(entry["amount"]!),
-                    ))
-                .toList(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Close"),
-          ),
-        ],
-      ),
-    );
-  }
 
   Future<void> _loadSavings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -142,10 +182,34 @@ void _showAddMoneyDialog(int index) {
   }
 
   void _deleteSaving(int index) {
-    setState(() {
-      savings.removeAt(index);
-      _saveSavings();
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[850],
+          title: const Text("Delete Saving", style: TextStyle(color: Colors.white)),
+          content: const Text("Do you really want to delete this?", style: TextStyle(color: Colors.white)),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("No", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  savings.removeAt(index);
+                  _saveSavings();
+                });
+                Navigator.pop(context); 
+              },
+              child: const Text("Yes", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -198,8 +262,10 @@ void _showAddMoneyDialog(int index) {
     );
   }
 
-  Widget _buildSavingCard(Map<String, dynamic> saving, int index) {
-    bool isDone = saving["saved"] >= saving["goal"];
+  Widget _buildSavingCard(Map<String, dynamic> saving, int index, bool isDone) {
+    double percent = saving["saved"] / saving["goal"];
+    percent = percent > 1 ? 1 : percent;
+
     return Card(
       child: ListTile(
         title: Text(saving["title"]),
