@@ -97,8 +97,11 @@ Widget build(BuildContext context) {
     child: Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text("PocketPlan"),
-        centerTitle: true,
+        title: Text(
+          "PocketPlan",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF263238),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -129,11 +132,14 @@ Widget build(BuildContext context) {
             ),
             SizedBox(height: 20),
             Text(
-              "Daily Save",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              "Your Progress This Week",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
             ),
-            SizedBox(height: 8),
-            Expanded(
+            SizedBox(height: 10),
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              elevation: 4,
+              color: Color(0xFFEAEAEA),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: AspectRatio(
@@ -181,6 +187,7 @@ Widget build(BuildContext context) {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

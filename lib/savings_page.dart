@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pocketplan/saving_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
 class SavingsPage extends StatefulWidget {
   @override
   _SavingsPageState createState() => _SavingsPageState();
@@ -113,16 +114,21 @@ void _showAddMoneyDialog(int index) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text("Add Money"),
+      backgroundColor: Colors.grey[850],
+      title: Text("Add Money", style: TextStyle(color: Colors.white)),
       content: TextField(
         controller: amountController,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(labelText: "Amount to save"),
+        decoration: InputDecoration(
+          labelText: "Amount to save",
+          labelStyle: TextStyle(color: Colors.white),
+        ),
+        style: TextStyle(color: Colors.white),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel"),
+          child: Text("Cancel", style: TextStyle(color: Colors.white)),
         ),
         ElevatedButton(
           onPressed: () {
@@ -220,43 +226,114 @@ void _showAddMoneyDialog(int index) {
         savings.where((s) => s["saved"] >= s["goal"]).toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Savings")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
+      appBar: AppBar(
+        title: const Text(
+          "Your Savings",
+          style: TextStyle(color: Colors.white),
+          ),
+        backgroundColor: Color(0xFF263238),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    if (ongoingSavings.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          "Ongoing Goals",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      ...ongoingSavings.map((saving) {
+                        int index = savings.indexOf(saving);
+                        return _buildSavingCard(saving, index, false);
+                      }).toList(),
+                    ],
+                    if (doneSavings.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          "Completed Goals",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      ...doneSavings.map((saving) {
+                        int index = savings.indexOf(saving);
+                        return _buildSavingCard(saving, index, true);
+                      }).toList(),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
                 children: [
-                  if (ongoingSavings.isNotEmpty) ...[
-                    Text("Ongoing", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    ...ongoingSavings.map((saving) {
-                      int index = savings.indexOf(saving);
-                      return _buildSavingCard(saving, index);
-                    }).toList(),
-                  ],
-                  if (doneSavings.isNotEmpty) ...[
-                    SizedBox(height: 20),
-                    Text("Done", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    ...doneSavings.map((saving) {
-                      int index = savings.indexOf(saving);
-                      return _buildSavingCard(saving, index);
-                    }).toList(),
-                  ],
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _showCreateNewSavingDialog,
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        "New Saving",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[700],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SavingHistoryPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 227, 227, 227),
+                      foregroundColor: Colors.green[700],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(color: Colors.green),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    ),
+                    child: const Icon(Icons.history),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 10),
-                        ElevatedButton(
-              onPressed: _showSavingHistory,
-              child: Text("See Saving History"),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => _showCreateNewSavingDialog(),
-              child: Text("Create New Saving"),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -267,26 +344,51 @@ void _showAddMoneyDialog(int index) {
     percent = percent > 1 ? 1 : percent;
 
     return Card(
-      child: ListTile(
-        title: Text(saving["title"]),
-        subtitle: Text(
-          "Saved: ${saving["saved"]} / ${saving["goal"]}",
-          style: TextStyle(color: isDone ? Colors.green : Colors.red),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      color: const Color.fromARGB(255, 225, 225, 225),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () => _showEditSavingDialog(index),
+            Text(
+              saving["title"],
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 0, 0, 0)),
             ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => _showAddMoneyDialog(index),
+            const SizedBox(height: 8),
+            LinearProgressIndicator(
+              value: percent,
+              color: Colors.green[700],
+              backgroundColor: Colors.grey[600],
+              minHeight: 8,
             ),
-            IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _deleteSaving(index),
+            const SizedBox(height: 8),
+            Text(
+              "${saving["saved"]} / ${saving["goal"]}",
+              style: TextStyle(
+                color: isDone ? Colors.green[700] : const Color.fromARGB(255, 91, 91, 91),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Color.fromARGB(255, 109, 109, 109)),
+                  onPressed: () => _showEditSavingDialog(index),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add, color: Colors.green),
+                  onPressed: () => _showAddMoneyDialog(index),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _deleteSaving(index),
+                ),
+              ],
             ),
           ],
         ),
@@ -300,22 +402,38 @@ void _showAddMoneyDialog(int index) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Create new Saving"),
+        backgroundColor: Colors.grey[850],
+        title: Text("Create new Saving", style: TextStyle(color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: titleController, decoration: InputDecoration(labelText: "Title")),
-            TextField(controller: amountController, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Amount to save")),
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: "Title", labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+            ),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Amount to save", labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: Colors.white)),
+          ),
           ElevatedButton(
             onPressed: () {
-              _addSaving(titleController.text, int.parse(amountController.text));
+              _addSaving(
+                titleController.text,
+                int.parse(amountController.text),
+              );
               Navigator.pop(context);
             },
-            child: Text("Create"),
+            child: Text("Create", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
           ),
         ],
       ),
@@ -323,27 +441,48 @@ void _showAddMoneyDialog(int index) {
   }
 
   void _showEditSavingDialog(int index) {
-    TextEditingController titleController = TextEditingController(text: savings[index]["title"]);
-    TextEditingController amountController = TextEditingController(text: savings[index]["goal"].toString());
+    TextEditingController titleController = TextEditingController(
+      text: savings[index]["title"],
+    );
+    TextEditingController amountController = TextEditingController(
+      text: savings[index]["goal"].toString(),
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Edit Saving"),
+        backgroundColor: Colors.grey[850],
+        title: Text("Edit Saving", style: TextStyle(color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: titleController, decoration: InputDecoration(labelText: "Title")),
-            TextField(controller: amountController, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Goal Amount")),
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: "Title", labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+            ),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Goal Amount", labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: Colors.white)),
+          ),
           ElevatedButton(
             onPressed: () {
-              _editSaving(index, titleController.text, int.parse(amountController.text));
+              _editSaving(
+                index,
+                titleController.text,
+                int.parse(amountController.text),
+              );
               Navigator.pop(context);
             },
-            child: Text("Save"),
+            child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
           ),
         ],
       ),
