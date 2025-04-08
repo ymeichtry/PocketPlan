@@ -1,0 +1,197 @@
+commit 263fdd0fd9d8f671d9a219affcda9aaadae2a93d
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 16:31:55 2025 +0200
+
+    added into Readme where you find the apk
+
+commit dc161d1787a2ac3258d0debe5db9f6f51e00af5f
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 16:29:01 2025 +0200
+
+    add documents from the moodle Tasks
+
+commit 9de53c76660222dd3a5fe86fcb2ecc9573585f4e
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 14:10:28 2025 +0200
+
+    refactored every file again after linter issue resolving
+
+commit 35282e0bdfb1f9e345604ab1f92c3c76a9a180a1
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 14:02:01 2025 +0200
+
+    resolved again EsLint Issues with new Linter rules
+
+commit 49ac4f92c7ddda7a1c5280e006f559199c8362ac
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 13:33:45 2025 +0200
+
+    reformatted my whole code and every file
+
+commit 307fa2575d0ddf0caeb2d9c6a168139b71af56ff
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 13:27:07 2025 +0200
+
+    Analyzed issues from EsLint and reverted them
+
+commit aa99287369e3ea05d3bc3ffaabaa0e3b01eb5ba9
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 13:13:51 2025 +0200
+
+    created a beautiful README file
+
+commit 7aae7f29ab11847f4193cccff91ccb1c1f860fef
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 12:54:43 2025 +0200
+
+    added "How to use Pocketplan" section to the website
+
+commit 30c9e9be29e4a5aa307c5547e02cfb7e949d5d4f
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 10:51:42 2025 +0200
+
+    added a landingpage
+
+commit 6f41f2b50395176a657cb51dca70419e71d2de03
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 08:23:30 2025 +0200
+
+    deleted select Language section
+
+commit ebdc4fbde201b12033f0c0134a77ba0c4f0af5ea
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Tue Apr 8 08:19:09 2025 +0200
+
+    if you add Money the Smarthphone vibrates now
+
+commit e045d94e110a7ebaeabfd07de363206ec4b00a42
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 18:58:45 2025 +0200
+
+    removed Flutter Logos and added my selfmade Logo
+
+commit cc948df0a6ea408ec5efbf869d46c8ff4746207b
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 18:15:24 2025 +0200
+
+    added functionality to LogIn with FingerId
+
+commit 2c762cd570be76e58253879550094f5281792698
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 16:44:00 2025 +0200
+
+    dependencies which i had to download
+
+commit a8e5f35432a9a32e7986c0e3a873aa3f4eb19c44
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 16:43:28 2025 +0200
+
+    try to add the logo
+
+commit 00f86820f6d664ff69c4762e1698647b79813dbf
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:55:51 2025 +0200
+
+    add all the generated stuff
+
+commit 81f8c171cec08704cf6540c25bb52a23bacfc36c
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:46:15 2025 +0200
+
+    redesigned the home_page and savings_page
+
+commit 9ec70e44e3d7eb6f15cdc0ae974fa72f46f3af49
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:40:32 2025 +0200
+
+    add functionality of the LogIn into the main.dart file
+
+commit a1a9f9ae8f073a55e048b3bf39a275b1a43f81ba
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:39:19 2025 +0200
+
+    created pin_login_page and redesigned the settings_page
+
+commit d6f071d775a2e317454cbf4167b75691ce26fc81
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:37:52 2025 +0200
+
+    added the new functionalities into the home_page
+
+commit 4cbdd320b662e72d202aa2a4ade320c3e039001d
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:35:12 2025 +0200
+
+    add saving_history_page
+
+commit 910ecf39278e6e3aa807a39e05c4a49c97cd8c49
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Mon Apr 7 08:34:10 2025 +0200
+
+    created function of the savings_page (savingHistory and createNewSaving)
+
+commit 7b848515b736a92b960c5cf060d056dd821ee34b
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 16:44:24 2025 +0200
+
+    save money into "savingHistory"
+
+commit 6dcb785503a3bd5eb696feb94f654ff3db7b9473
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 16:01:35 2025 +0200
+
+    used shared_prefrences to save new entries
+
+commit 9c4da58c74634c5a6dda0c5a4b199d65fe15a7bd
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 14:31:29 2025 +0200
+
+    added dependencies shared_preferences
+
+commit 030a510dc8fbfc5f61b022b074ced1e38d0855a4
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 14:31:10 2025 +0200
+
+    created edit and delete button to savings
+
+commit 9c3160682de210b3814f9b6f1c740ab260979a69
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 14:00:24 2025 +0200
+
+    ground structure of my Pages
+
+commit 3827ad4bf1c623416f3727dc2e1b8ba1fa60c720
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 14:00:09 2025 +0200
+
+    add main and create my Pages
+
+commit 002d616b38bb41c82b6324605cd42f18ce1382f3
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 13:59:48 2025 +0200
+
+    deleted test pattern test in test file
+
+commit c6d1f93d11dcd367a698560f1f0f59d8734a0dac
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 13:59:19 2025 +0200
+
+    commit new spec files
+
+commit 0959e5a6ce5c7aeec76c3ebf441d77f862598776
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 11:05:39 2025 +0200
+
+    Project setup "Flutter"
+
+commit 9ccdb8b1bc50e632c16c65ab2226de799b0506d6
+Author: Yanis Meichtry <yanis@meichtry.dev>
+Date:   Wed Apr 2 11:04:58 2025 +0200
+
+    add .gitignore files
+
+commit 81cd93cc07800fbcd17c644a460815fc639a29ab
+Author: Yanis Meichtry <120029017+ymeichtry@users.noreply.github.com>
+Date:   Wed Apr 2 10:56:55 2025 +0200
+
+    Initial commit
