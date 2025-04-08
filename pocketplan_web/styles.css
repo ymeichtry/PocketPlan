@@ -52,6 +52,7 @@
     color: #888;
     text-align: center;
     padding: 1rem 0;
+    margin-top: 100px;
   } 
   
   header {
@@ -121,4 +122,31 @@
     background-color: #2E7D32;
     transform: scale(1.05);
   }
+  
+  .howto-section {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-top: 4rem;
+    box-shadow: 0 0 20px rgba(27, 94, 32, 0.4);
+  }
+  
+  .howto-section h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+  
+  .howto-list {
+    text-align: left;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-size: 1rem;
+    color: var(--text);
+  }
+  
+  .howto-list li {
+    margin-bottom: 1.5rem;
+  }
+  
   
