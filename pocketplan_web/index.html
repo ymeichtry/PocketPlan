@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PocketPlan</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="/assets/White_Icon.png" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="assets/White_Icon.png" alt="PocketPlan Icon" class="icon" />
+      <h1>PocketPlan</h1>
+      <p class="tagline">Saving made simple, always in your pocket.</p>
+    </header>
+
+    <section class="description">
+      <p>PocketPlan makes saving easy and intuitive — track goals, build habits, and manage your money effortlessly, all in one sleek app that fits right in your pocket.</p>
+      <a href="/assets/pocketplan.apk" class="download-btn" download>Download APK</a>
+    </section>
+
+    <section class="screenshots">
+      <img src="/assets/Mockup_HomePage.png" alt="Screenshot 1" class="screenshot"/>
+      <img src="/assets/Mockup_PinPage.png" alt="Screenshot 2" class="screenshot"/>
+      <img src="/assets/Mockup_SavingHisotry.png" alt="Screenshot 3" class="screenshot"/>
+    </section>
+
+    <footer>
+      <p>&copy; <span id="year"></span> PocketPlan</p>
+    </footer>
+  </div>
+</body>
+</html>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>

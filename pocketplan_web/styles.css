@@ -1,0 +1,124 @@
+/* Base colors */
+:root {
+    --primary: #1B5E20;
+    --bg: #121212;
+    --text: #E0F2F1;
+    --muted: #A5D6A7;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #000000;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: -30%;
+    left: -30%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(0, 255, 128, 0.07) 0%, transparent 60%),
+      radial-gradient(circle at 80% 70%, rgba(27, 94, 32, 0.05) 0%, transparent 60%);
+    filter: blur(160px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  .container {
+    flex: 1;
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    padding: 2rem;
+  }
+  
+  footer {
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+    padding: 1rem 0;
+  } 
+  
+  header {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }  
+  
+  .icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px var(--primary);
+    margin-bottom: 1rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    color: var(--primary);
+  }
+  
+  .tagline {
+    color: var(--muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+  
+  .description {
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    padding: 0 1rem;
+  }
+  
+  .screenshots {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  
+  .screenshot {
+    width: 30%;
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(27, 94, 32, 0.6);
+    transition: transform 0.3s;
+  }
+  
+  .screenshot:hover {
+    transform: scale(1.05);
+  }
+  
+  .download-btn {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary);
+    color: var(--text);
+    font-weight: bold;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(27, 94, 32, 0.5);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .download-btn:hover {
+    background-color: #2E7D32;
+    transform: scale(1.05);
+  }
+  
