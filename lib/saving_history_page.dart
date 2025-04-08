@@ -33,7 +33,10 @@ class _SavingHistoryPageState extends State<SavingHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Saving History", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Saving History",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF263238),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -49,7 +52,10 @@ class _SavingHistoryPageState extends State<SavingHistoryPage> {
         ),
         child: FutureBuilder<List<Map<String, String>>>(
           future: _loadSavingHistory(),
-          builder: (BuildContext context, AsyncSnapshot<List<Map<String, String>>> snapshot) {
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<List<Map<String, String>>> snapshot,
+          ) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
@@ -74,7 +80,10 @@ class _SavingHistoryPageState extends State<SavingHistoryPage> {
                   final Map<String, String> entry = savingHistory[index];
                   return Card(
                     color: const Color.fromARGB(255, 211, 211, 211),
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
                     child: ListTile(
                       leading: const Icon(
                         Icons.monetization_on,

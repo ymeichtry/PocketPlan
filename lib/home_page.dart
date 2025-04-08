@@ -105,7 +105,10 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text("PocketPlan", style: TextStyle(color: Colors.white)),
+          title: const Text(
+            "PocketPlan",
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: const Color(0xFF263238),
         ),
         body: Padding(
@@ -206,21 +209,26 @@ class _HomePageState extends State<HomePage> {
                         barGroups:
                             _prepareBarChartData()
                                 .map(
-                                  (BarChartGroupData group) => BarChartGroupData(
-                                    x: group.x,
-                                    barRods:
-                                        group.barRods
-                                            .map(
-                                              (BarChartRodData rod) => BarChartRodData(
-                                                toY: rod.toY,
-                                                color: Colors.green[700],
-                                                width: 16,
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                              ),
-                                            )
-                                            .toList(),
-                                  ),
+                                  (BarChartGroupData group) =>
+                                      BarChartGroupData(
+                                        x: group.x,
+                                        barRods:
+                                            group.barRods
+                                                .map(
+                                                  (
+                                                    BarChartRodData rod,
+                                                  ) => BarChartRodData(
+                                                    toY: rod.toY,
+                                                    color: Colors.green[700],
+                                                    width: 16,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                      ),
                                 )
                                 .toList(),
                       ),

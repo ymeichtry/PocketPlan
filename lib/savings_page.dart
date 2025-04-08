@@ -90,11 +90,16 @@ class _SavingsPageState extends State<SavingsPage> {
 
     List<Map<String, String>> todayHistory =
         savingHistory
-            .where((Map<String, String> entry) => entry["date"]!.startsWith(today))
+            .where(
+              (Map<String, String> entry) => entry["date"]!.startsWith(today),
+            )
             .toList();
     List<Map<String, String>> monthlyHistory =
         savingHistory
-            .where((Map<String, String> entry) => entry["date"]!.substring(0, 7) == thisMonth)
+            .where(
+              (Map<String, String> entry) =>
+                  entry["date"]!.substring(0, 7) == thisMonth,
+            )
             .toList();
 
     int dailyTotal = todayHistory.fold(
@@ -131,7 +136,10 @@ class _SavingsPageState extends State<SavingsPage> {
       builder:
           (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: const Text("Add Money", style: TextStyle(color: Colors.white)),
+            title: const Text(
+              "Add Money",
+              style: TextStyle(color: Colors.white),
+            ),
             content: TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
@@ -144,7 +152,10 @@ class _SavingsPageState extends State<SavingsPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -154,7 +165,9 @@ class _SavingsPageState extends State<SavingsPage> {
 
                   if (amount <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please enter a valid amount.")),
+                      const SnackBar(
+                        content: Text("Please enter a valid amount."),
+                      ),
                     );
                     return;
                   }
@@ -247,9 +260,13 @@ class _SavingsPageState extends State<SavingsPage> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> ongoingSavings =
-        savings.where((Map<String, dynamic> s) => s["saved"] < s["goal"]).toList();
+        savings
+            .where((Map<String, dynamic> s) => s["saved"] < s["goal"])
+            .toList();
     List<Map<String, dynamic>> doneSavings =
-        savings.where((Map<String, dynamic> s) => s["saved"] >= s["goal"]).toList();
+        savings
+            .where((Map<String, dynamic> s) => s["saved"] >= s["goal"])
+            .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -339,7 +356,9 @@ class _SavingsPageState extends State<SavingsPage> {
                         context,
                         // ignore: always_specify_types
                         MaterialPageRoute(
-                          builder: (BuildContext context) => const SavingHistoryPage(),
+                          builder:
+                              (BuildContext context) =>
+                                  const SavingHistoryPage(),
                         ),
                       );
                     },
@@ -470,7 +489,10 @@ class _SavingsPageState extends State<SavingsPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -502,7 +524,10 @@ class _SavingsPageState extends State<SavingsPage> {
       builder:
           (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: const Text("Edit Saving", style: TextStyle(color: Colors.white)),
+            title: const Text(
+              "Edit Saving",
+              style: TextStyle(color: Colors.white),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -528,7 +553,10 @@ class _SavingsPageState extends State<SavingsPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {

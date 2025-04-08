@@ -45,7 +45,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = <Widget>[const HomePage(), const SavingsPage(), const SettingsPage()];
+  final List<Widget> _pages = <Widget>[
+    const HomePage(),
+    const SavingsPage(),
+    const SettingsPage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -65,7 +69,10 @@ class _MainPageState extends State<MainPage> {
         unselectedItemColor: Colors.grey,
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          const BottomNavigationBarItem(icon: Icon(Icons.list), label: "Savings"),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: "Savings",
+          ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",

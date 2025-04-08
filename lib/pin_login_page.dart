@@ -179,15 +179,30 @@ class _PinLoginPageState extends State<PinLoginPage> {
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <String>['1', '2', '3'].map((String n) => _buildKey(n)).toList(),
+                  children:
+                      <String>[
+                        '1',
+                        '2',
+                        '3',
+                      ].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <String>['4', '5', '6'].map((String n) => _buildKey(n)).toList(),
+                  children:
+                      <String>[
+                        '4',
+                        '5',
+                        '6',
+                      ].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <String>['7', '8', '9'].map((String n) => _buildKey(n)).toList(),
+                  children:
+                      <String>[
+                        '7',
+                        '8',
+                        '9',
+                      ].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

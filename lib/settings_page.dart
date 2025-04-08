@@ -86,7 +86,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 keyboardType: TextInputType.number,
                 maxLength: 4,
-                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 onChanged: (String value) {
                   if (value.length > 4) {
                     controller.text = value.substring(0, 4);
@@ -99,7 +101,10 @@ class _SettingsPageState extends State<SettingsPage> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -109,7 +114,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Navigator.pop(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Password must be 4 digits")),
+                        const SnackBar(
+                          content: Text("Password must be 4 digits"),
+                        ),
                       );
                     }
                   },
@@ -162,7 +169,10 @@ class _SettingsPageState extends State<SettingsPage> {
       builder:
           (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: const Text("Change Limits", style: TextStyle(color: Colors.white)),
+            title: const Text(
+              "Change Limits",
+              style: TextStyle(color: Colors.white),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -189,7 +199,10 @@ class _SettingsPageState extends State<SettingsPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
