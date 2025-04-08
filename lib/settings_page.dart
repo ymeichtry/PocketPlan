@@ -8,7 +8,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _selectedLanguage = "English";
   bool _requirePassword = false;
   String _autoSaveFrequency = "Daily";
   TextEditingController _autoSaveAmountController = TextEditingController(text: "0");
@@ -25,7 +24,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedLanguage = prefs.getString("selectedLanguage") ?? "English";
       _requirePassword = prefs.getBool("requirePassword") ?? false;
       _autoSaveFrequency = prefs.getString("autoSaveFrequency") ?? "Daily";
       _autoSaveAmountController.text = (prefs.getInt("autoSaveAmount") ?? 0).toString();
@@ -36,7 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("selectedLanguage", _selectedLanguage);
     await prefs.setBool("requirePassword", _requirePassword);
     await prefs.setString("autoSaveFrequency", _autoSaveFrequency);
     await prefs.setInt("autoSaveAmount", int.tryParse(_autoSaveAmountController.text) ?? 0);
@@ -203,34 +200,6 @@ Widget build(BuildContext context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                color: Color(0xFFEAEAEA),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Language", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      DropdownButton<String>(
-                        value: _selectedLanguage,
-                        isExpanded: true,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedLanguage = newValue!;
-                          });
-                          _saveSettings();
-                        },
-                        items: ["English", "Deutsch", "Français", "Español"]
-                            .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
-                            .toList(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               // Password Section
               Card(
                 elevation: 4,
