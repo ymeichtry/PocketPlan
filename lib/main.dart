@@ -11,9 +11,12 @@ void main() async {
   bool requirePassword = prefs.getBool("requirePassword") ?? false;
   String? savedPassword = prefs.getString("userPassword");
 
-  runApp(MyApp(
-    showLogin: requirePassword && savedPassword != null && savedPassword.isNotEmpty,
-  ));
+  runApp(
+    MyApp(
+      showLogin:
+          requirePassword && savedPassword != null && savedPassword.isNotEmpty,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,9 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PocketPlan',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: showLogin ? PinLoginPage() : MainPage(),
     );
   }
@@ -44,11 +45,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    HomePage(),
-    SavingsPage(),
-    SettingsPage(),
-  ];
+  final List<Widget> _pages = [HomePage(), SavingsPage(), SettingsPage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -69,7 +66,10 @@ class _MainPageState extends State<MainPage> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: "Savings"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
         ],
       ),
     );

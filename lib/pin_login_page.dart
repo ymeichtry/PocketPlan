@@ -16,13 +16,13 @@ class _PinLoginPageState extends State<PinLoginPage> {
   String? _savedPin;
   final LocalAuthentication auth = LocalAuthentication();
 
-@override
-void initState() {
-  super.initState();
-  _loadPin().then((_) {
-    _checkBiometrics();
-  });
-}
+  @override
+  void initState() {
+    super.initState();
+    _loadPin().then((_) {
+      _checkBiometrics();
+    });
+  }
 
   Future<void> _loadPin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -55,42 +55,44 @@ void initState() {
 
   void _showError() {
     setState(() => _enteredPin.clear());
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Incorrect PIN")));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Incorrect PIN")));
   }
 
   void _navigateToHome() {
     Navigator.pushReplacement(
-      context, 
-      MaterialPageRoute(builder: (_) => MainPage())
+      context,
+      MaterialPageRoute(builder: (_) => MainPage()),
     );
   }
 
-Future<void> _checkBiometrics() async {
-  try {
-    bool canCheck = await auth.canCheckBiometrics;
-    bool isDeviceSupported = await auth.isDeviceSupported();
+  Future<void> _checkBiometrics() async {
+    try {
+      bool canCheck = await auth.canCheckBiometrics;
+      bool isDeviceSupported = await auth.isDeviceSupported();
 
-    if (canCheck && isDeviceSupported) {
-      bool authenticated = await auth.authenticate(
-        localizedReason: 'Authenticate to access PocketPlanner',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
-      );
+      if (canCheck && isDeviceSupported) {
+        bool authenticated = await auth.authenticate(
+          localizedReason: 'Authenticate to access PocketPlanner',
+          options: const AuthenticationOptions(
+            biometricOnly: true,
+            stickyAuth: true,
+          ),
+        );
 
-      if (authenticated) {
-        _navigateToHome();
+        if (authenticated) {
+          _navigateToHome();
+        }
       }
+    } catch (e) {
+      debugPrint('Biometric auth error: $e');
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Biometric authentication failed")),
+      );
     }
-  } catch (e) {
-    debugPrint('Biometric auth error: $e');
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Biometric authentication failed")),
-    );
   }
-}
 
   Widget _buildCircle(bool filled) {
     return Container(
@@ -114,7 +116,12 @@ Future<void> _checkBiometrics() async {
           border: Border.all(color: Colors.white),
         ),
         padding: EdgeInsets.all(22),
-        child: Center(child: Text(number, style: TextStyle(fontSize: 22, color: Colors.white))),
+        child: Center(
+          child: Text(
+            number,
+            style: TextStyle(fontSize: 22, color: Colors.white),
+          ),
+        ),
       ),
     );
   }
@@ -136,15 +143,32 @@ Future<void> _checkBiometrics() async {
           children: [
             Column(
               children: [
-                Text("Welcome to", style: TextStyle(fontSize: 22, color: Colors.white)),
-                Text("PocketPlan", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
-                Text("Saving made simple, always in your pocket", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70)),
+                Text(
+                  "Welcome to",
+                  style: TextStyle(fontSize: 22, color: Colors.white),
+                ),
+                Text(
+                  "PocketPlan",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "Saving made simple, always in your pocket",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70),
+                ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ...List.generate(4, (index) => _buildCircle(index < _enteredPin.length)),
+                ...List.generate(
+                  4,
+                  (index) => _buildCircle(index < _enteredPin.length),
+                ),
                 SizedBox(width: 10),
                 _buildBackspaceButton(),
               ],
@@ -177,7 +201,10 @@ Future<void> _checkBiometrics() async {
               children: [
                 TextButton(
                   onPressed: _checkBiometrics,
-                  child: Text("Use Biometrics", style: TextStyle(color: Colors.blue)),
+                  child: Text(
+                    "Use Biometrics",
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             ),

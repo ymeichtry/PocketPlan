@@ -37,7 +37,7 @@ class _SavingsPageState extends State<SavingsPage> {
     Map<String, String> newEntry = {
       "date": formattedDate,
       "amount": amount.toString(),
-      "savingTitle": savingTitle
+      "savingTitle": savingTitle,
     };
 
     currentHistory.insert(0, newEntry);
@@ -87,15 +87,23 @@ class _SavingsPageState extends State<SavingsPage> {
     String today = now.toIso8601String().substring(0, 10);
     String thisMonth = "${now.year}-${now.month}";
 
-    List<Map<String, String>> todayHistory = savingHistory
-        .where((entry) => entry["date"]!.startsWith(today))
-        .toList();
-    List<Map<String, String>> monthlyHistory = savingHistory
-        .where((entry) => entry["date"]!.substring(0, 7) == thisMonth)
-        .toList();
+    List<Map<String, String>> todayHistory =
+        savingHistory
+            .where((entry) => entry["date"]!.startsWith(today))
+            .toList();
+    List<Map<String, String>> monthlyHistory =
+        savingHistory
+            .where((entry) => entry["date"]!.substring(0, 7) == thisMonth)
+            .toList();
 
-    int dailyTotal = todayHistory.fold(0, (sum, item) => sum + int.parse(item["amount"]!));
-    int monthlyTotal = monthlyHistory.fold(0, (sum, item) => sum + int.parse(item["amount"]!));
+    int dailyTotal = todayHistory.fold(
+      0,
+      (sum, item) => sum + int.parse(item["amount"]!),
+    );
+    int monthlyTotal = monthlyHistory.fold(
+      0,
+      (sum, item) => sum + int.parse(item["amount"]!),
+    );
 
     if (dailyLimit > 0 && (dailyTotal + amount) > dailyLimit) {
       _showError("Daily limit of $dailyLimit exceeded!");
@@ -110,59 +118,67 @@ class _SavingsPageState extends State<SavingsPage> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
-  
-void _showAddMoneyDialog(int index) {
-  TextEditingController amountController = TextEditingController();
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: Colors.grey[850],
-      title: Text("Add Money", style: TextStyle(color: Colors.white)),
-      content: TextField(
-        controller: amountController,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: "Amount to save",
-          labelStyle: TextStyle(color: Colors.white),
-        ),
-        style: TextStyle(color: Colors.white),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text("Cancel", style: TextStyle(color: Colors.white)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            int amount = int.tryParse(amountController.text) ?? 0;
-            int remainingAmount = savings[index]["goal"] - savings[index]["saved"];
 
-            if (amount <= 0) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Please enter a valid amount.")),
-              );
-              return;
-            }
+  void _showAddMoneyDialog(int index) {
+    TextEditingController amountController = TextEditingController();
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[850],
+            title: Text("Add Money", style: TextStyle(color: Colors.white)),
+            content: TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Amount to save",
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  int amount = int.tryParse(amountController.text) ?? 0;
+                  int remainingAmount =
+                      savings[index]["goal"] - savings[index]["saved"];
 
-            if (amount > remainingAmount) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("You can only add up to $remainingAmount!")),
-              );
-              return;
-            }
+                  if (amount <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please enter a valid amount.")),
+                    );
+                    return;
+                  }
 
-            _addMoney(index, amount);
-            Vibration.vibrate(duration: 150);
-            Navigator.pop(context);            
-          },
-          child: Text("Add", style: TextStyle(color: Colors.black)),
-        ),
-      ],
-    ),
-  );
-}
+                  if (amount > remainingAmount) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "You can only add up to $remainingAmount!",
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  _addMoney(index, amount);
+                  Vibration.vibrate(duration: 150);
+                  Navigator.pop(context);
+                },
+                child: Text("Add", style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+    );
+  }
 
   Future<void> _loadSavings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -195,8 +211,14 @@ void _showAddMoneyDialog(int index) {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.grey[850],
-          title: const Text("Delete Saving", style: TextStyle(color: Colors.white)),
-          content: const Text("Do you really want to delete this?", style: TextStyle(color: Colors.white)),
+          title: const Text(
+            "Delete Saving",
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            "Do you really want to delete this?",
+            style: TextStyle(color: Colors.white),
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -210,7 +232,7 @@ void _showAddMoneyDialog(int index) {
                   savings.removeAt(index);
                   _saveSavings();
                 });
-                Navigator.pop(context); 
+                Navigator.pop(context);
               },
               child: const Text("Yes", style: TextStyle(color: Colors.white)),
             ),
@@ -232,7 +254,7 @@ void _showAddMoneyDialog(int index) {
         title: const Text(
           "Your Savings",
           style: TextStyle(color: Colors.white),
-          ),
+        ),
         backgroundColor: Color(0xFF263238),
       ),
       body: Container(
@@ -294,10 +316,7 @@ void _showAddMoneyDialog(int index) {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _showCreateNewSavingDialog,
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
+                      icon: const Icon(Icons.add, color: Colors.white),
                       label: const Text(
                         "New Saving",
                         style: TextStyle(color: Colors.white),
@@ -328,7 +347,10 @@ void _showAddMoneyDialog(int index) {
                         borderRadius: BorderRadius.circular(12),
                         side: const BorderSide(color: Colors.green),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
                     ),
                     child: const Icon(Icons.history),
                   ),
@@ -357,7 +379,11 @@ void _showAddMoneyDialog(int index) {
           children: [
             Text(
               saving["title"],
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 0, 0, 0)),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
             ),
             const SizedBox(height: 8),
             LinearProgressIndicator(
@@ -370,7 +396,10 @@ void _showAddMoneyDialog(int index) {
             Text(
               "${saving["saved"]} / ${saving["goal"]}",
               style: TextStyle(
-                color: isDone ? Colors.green[700] : const Color.fromARGB(255, 91, 91, 91),
+                color:
+                    isDone
+                        ? Colors.green[700]
+                        : const Color.fromARGB(255, 91, 91, 91),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -379,7 +408,10 @@ void _showAddMoneyDialog(int index) {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit, color: Color.fromARGB(255, 109, 109, 109)),
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Color.fromARGB(255, 109, 109, 109),
+                  ),
                   onPressed: () => _showEditSavingDialog(index),
                 ),
                 IconButton(
@@ -403,42 +435,55 @@ void _showAddMoneyDialog(int index) {
     TextEditingController amountController = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[850],
-        title: Text("Create new Saving", style: TextStyle(color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: "Title", labelStyle: TextStyle(color: Colors.white)),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[850],
+            title: Text(
+              "Create new Saving",
               style: TextStyle(color: Colors.white),
             ),
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Amount to save", labelStyle: TextStyle(color: Colors.white)),
-              style: TextStyle(color: Colors.white),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: "Title",
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+                TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Amount to save",
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: Colors.white)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _addSaving(
+                    titleController.text,
+                    int.parse(amountController.text),
+                  );
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Create",
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              _addSaving(
-                titleController.text,
-                int.parse(amountController.text),
-              );
-              Navigator.pop(context);
-            },
-            child: Text("Create", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
-          ),
-        ],
-      ),
     );
   }
 
@@ -451,43 +496,53 @@ void _showAddMoneyDialog(int index) {
     );
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[850],
-        title: Text("Edit Saving", style: TextStyle(color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: "Title", labelStyle: TextStyle(color: Colors.white)),
-              style: TextStyle(color: Colors.white),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[850],
+            title: Text("Edit Saving", style: TextStyle(color: Colors.white)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: "Title",
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+                TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Goal Amount",
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Goal Amount", labelStyle: TextStyle(color: Colors.white)),
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: Colors.white)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _editSaving(
+                    index,
+                    titleController.text,
+                    int.parse(amountController.text),
+                  );
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              _editSaving(
-                index,
-                titleController.text,
-                int.parse(amountController.text),
-              );
-              Navigator.pop(context);
-            },
-            child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
-          ),
-        ],
-      ),
     );
   }
 }

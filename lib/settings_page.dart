@@ -13,7 +13,9 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _requirePassword = false;
   String _autoSaveFrequency = "Daily";
-  final TextEditingController _autoSaveAmountController = TextEditingController(text: "0");
+  final TextEditingController _autoSaveAmountController = TextEditingController(
+    text: "0",
+  );
 
   int _dailyLimit = 0;
   int _monthlyLimit = 0;
@@ -29,7 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _requirePassword = prefs.getBool("requirePassword") ?? false;
       _autoSaveFrequency = prefs.getString("autoSaveFrequency") ?? "Daily";
-      _autoSaveAmountController.text = (prefs.getInt("autoSaveAmount") ?? 0).toString();
+      _autoSaveAmountController.text =
+          (prefs.getInt("autoSaveAmount") ?? 0).toString();
       _dailyLimit = prefs.getInt("dailyLimit") ?? 0;
       _monthlyLimit = prefs.getInt("monthlyLimit") ?? 0;
     });
@@ -39,74 +42,91 @@ class _SettingsPageState extends State<SettingsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool("requirePassword", _requirePassword);
     await prefs.setString("autoSaveFrequency", _autoSaveFrequency);
-    await prefs.setInt("autoSaveAmount", int.tryParse(_autoSaveAmountController.text) ?? 0);
+    await prefs.setInt(
+      "autoSaveAmount",
+      int.tryParse(_autoSaveAmountController.text) ?? 0,
+    );
   }
 
   Future<void> _changePasswordDialog() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String currentPassword = prefs.getString("userPassword") ?? "";
-    TextEditingController controller = TextEditingController(text: currentPassword);
+    TextEditingController controller = TextEditingController(
+      text: currentPassword,
+    );
     bool isVisible = false;
 
-await showDialog(
-  // ignore: use_build_context_synchronously
-  context: context,
-  builder: (context) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return AlertDialog(
-          backgroundColor: Colors.grey[850],
-          title: Text("Change your password", style: TextStyle(color: Colors.white)),
-          content: TextField(
-            controller: controller,
-            obscureText: !isVisible,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              labelText: "Password",
-              labelStyle: TextStyle(color: Colors.white),
-              suffixIcon: IconButton(
-                icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white),
-                onPressed: () => setState(() => isVisible = !isVisible),
+    await showDialog(
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[850],
+              title: Text(
+                "Change your password",
+                style: TextStyle(color: Colors.white),
               ),
-            ),
-            keyboardType: TextInputType.number,
-            maxLength: 4,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            onChanged: (value) {
-              if (value.length > 4) {
-                controller.text = value.substring(0, 4);
-                controller.selection = TextSelection.fromPosition(TextPosition(offset: 4));
-              }
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: TextStyle(color: Colors.white)),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (controller.text.length == 4) {
-                  await prefs.setString("userPassword", controller.text);
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password must be 4 digits")));
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 255, 255, 255),
+              content: TextField(
+                controller: controller,
+                obscureText: !isVisible,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  labelStyle: TextStyle(color: Colors.white),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => setState(() => isVisible = !isVisible),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (value) {
+                  if (value.length > 4) {
+                    controller.text = value.substring(0, 4);
+                    controller.selection = TextSelection.fromPosition(
+                      TextPosition(offset: 4),
+                    );
+                  }
+                },
               ),
-              child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (controller.text.length == 4) {
+                      await prefs.setString("userPassword", controller.text);
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Password must be 4 digits")),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  ),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
-  },
-);}
+  }
 
   Future<void> _handleRequirePasswordChanged(bool newValue) async {
     if (newValue) {
@@ -129,161 +149,190 @@ await showDialog(
   }
 
   void _showLimitDialog() {
-    TextEditingController dailyController = TextEditingController(text: _dailyLimit.toString());
-    TextEditingController monthlyController = TextEditingController(text: _monthlyLimit.toString());
+    TextEditingController dailyController = TextEditingController(
+      text: _dailyLimit.toString(),
+    );
+    TextEditingController monthlyController = TextEditingController(
+      text: _monthlyLimit.toString(),
+    );
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[850], 
-        title: Text("Change Limits", style: TextStyle(color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: dailyController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Daily Limit",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            TextField(
-              controller: monthlyController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Monthly Limit",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: Colors.white)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              int daily = int.tryParse(dailyController.text) ?? 0;
-              int monthly = int.tryParse(monthlyController.text) ?? 0;
-              _saveLimits(daily, monthly);
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 255, 255, 255),
-            ),
-            child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text("Settings", style: TextStyle(color: Colors.white)),
-      backgroundColor: Color(0xFF263238),
-    ),
-    body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Password Section
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                color: Color(0xFFEAEAEA),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Password when Log in",
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Switch(
-                            value: _requirePassword,
-                            onChanged: _handleRequirePasswordChanged,
-                            activeColor: Colors.white,
-                            inactiveThumbColor: Colors.grey,
-                            inactiveTrackColor: Colors.grey[300],
-                            activeTrackColor: Color(0xFF1E88E5),
-                          ),
-                        ],
-                      ),
-                      if (_requirePassword)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            onPressed: _changePasswordDialog,
-                            child: Text("Change Password", style: TextStyle(fontSize: 16, color: const Color(0xFF1E88E5))),
-                          ),
-                        ),
-                    ],
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[850],
+            title: Text("Change Limits", style: TextStyle(color: Colors.white)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: dailyController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Daily Limit",
+                    labelStyle: TextStyle(color: Colors.white),
                   ),
+                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                color: Color(0xFFEAEAEA),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Saving Limits", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      Text("Daily: $_dailyLimit .-"),
-                      Text("Monthly: $_monthlyLimit .-"),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: _showLimitDialog,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF004D40),
-                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: Text(
-                          "Change Limits",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+                TextField(
+                  controller: monthlyController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Monthly Limit",
+                    labelStyle: TextStyle(color: Colors.white),
                   ),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  int daily = int.tryParse(dailyController.text) ?? 0;
+                  int monthly = int.tryParse(monthlyController.text) ?? 0;
+                  _saveLimits(daily, monthly);
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                ),
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
                 ),
               ),
             ],
           ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Settings", style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF263238),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Password Section
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  color: Color(0xFFEAEAEA),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Password when Log in",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Switch(
+                              value: _requirePassword,
+                              onChanged: _handleRequirePasswordChanged,
+                              activeColor: Colors.white,
+                              inactiveThumbColor: Colors.grey,
+                              inactiveTrackColor: Colors.grey[300],
+                              activeTrackColor: Color(0xFF1E88E5),
+                            ),
+                          ],
+                        ),
+                        if (_requirePassword)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                              onPressed: _changePasswordDialog,
+                              child: Text(
+                                "Change Password",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: const Color(0xFF1E88E5),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  color: Color(0xFFEAEAEA),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Saving Limits",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text("Daily: $_dailyLimit .-"),
+                        Text("Monthly: $_monthlyLimit .-"),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: _showLimitDialog,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF004D40),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            "Change Limits",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
