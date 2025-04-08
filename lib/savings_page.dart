@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:pocketplan/saving_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:vibration/vibration.dart';
+
 class SavingsPage extends StatefulWidget {
   @override
   _SavingsPageState createState() => _SavingsPageState();
@@ -150,10 +152,8 @@ void _showAddMoneyDialog(int index) {
             }
 
             _addMoney(index, amount);
-            HapticFeedback.mediumImpact();
-            Navigator.pop(context);
-            HapticFeedback.lightImpact();
-            
+            Vibration.vibrate(duration: 150);
+            Navigator.pop(context);            
           },
           child: Text("Add", style: TextStyle(color: Colors.black)),
         ),
