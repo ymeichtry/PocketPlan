@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PocketPlan',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: showLogin ? PinLoginPage() : MainPage(),
+      home: showLogin ? const PinLoginPage() : const MainPage(),
     );
   }
 }
@@ -45,7 +45,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [HomePage(), SavingsPage(), SettingsPage()];
+  final List<Widget> _pages = <Widget>[const HomePage(), const SavingsPage(), const SettingsPage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -60,13 +60,13 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: Color(0xFF263238),
+        backgroundColor: const Color(0xFF263238),
         selectedItemColor: Colors.green[700],
         unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Savings"),
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          const BottomNavigationBarItem(icon: Icon(Icons.list), label: "Savings"),
+          const BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",
           ),

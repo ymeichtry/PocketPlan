@@ -13,8 +13,8 @@ class SavingsPage extends StatefulWidget {
 }
 
 class _SavingsPageState extends State<SavingsPage> {
-  List<Map<String, dynamic>> savings = [];
-  List<Map<String, String>> savingHistory = [];
+  List<Map<String, dynamic>> savings = <Map<String, dynamic>>[];
+  List<Map<String, String>> savingHistory = <Map<String, String>>[];
 
   @override
   void initState() {
@@ -26,15 +26,16 @@ class _SavingsPageState extends State<SavingsPage> {
   void _addToHistory(int amount, String savingTitle) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? historyJson = prefs.getString('savingHistory');
-    List<Map<String, String>> currentHistory = [];
+    List<Map<String, String>> currentHistory = <Map<String, String>>[];
 
     if (historyJson != null) {
       List<dynamic> decoded = json.decode(historyJson);
+      // ignore: always_specify_types
       currentHistory = decoded.map((e) => Map<String, String>.from(e)).toList();
     }
 
     String formattedDate = DateTime.now().toString().substring(0, 16);
-    Map<String, String> newEntry = {
+    Map<String, String> newEntry = <String, String>{
       "date": formattedDate,
       "amount": amount.toString(),
       "savingTitle": savingTitle,
@@ -89,20 +90,20 @@ class _SavingsPageState extends State<SavingsPage> {
 
     List<Map<String, String>> todayHistory =
         savingHistory
-            .where((entry) => entry["date"]!.startsWith(today))
+            .where((Map<String, String> entry) => entry["date"]!.startsWith(today))
             .toList();
     List<Map<String, String>> monthlyHistory =
         savingHistory
-            .where((entry) => entry["date"]!.substring(0, 7) == thisMonth)
+            .where((Map<String, String> entry) => entry["date"]!.substring(0, 7) == thisMonth)
             .toList();
 
     int dailyTotal = todayHistory.fold(
       0,
-      (sum, item) => sum + int.parse(item["amount"]!),
+      (int sum, Map<String, String> item) => sum + int.parse(item["amount"]!),
     );
     int monthlyTotal = monthlyHistory.fold(
       0,
-      (sum, item) => sum + int.parse(item["amount"]!),
+      (int sum, Map<String, String> item) => sum + int.parse(item["amount"]!),
     );
 
     if (dailyLimit > 0 && (dailyTotal + amount) > dailyLimit) {
@@ -128,22 +129,22 @@ class _SavingsPageState extends State<SavingsPage> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: Text("Add Money", style: TextStyle(color: Colors.white)),
+            title: const Text("Add Money", style: TextStyle(color: Colors.white)),
             content: TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Amount to save",
                 labelStyle: TextStyle(color: Colors.white),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -153,7 +154,7 @@ class _SavingsPageState extends State<SavingsPage> {
 
                   if (amount <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Please enter a valid amount.")),
+                      const SnackBar(content: Text("Please enter a valid amount.")),
                     );
                     return;
                   }
@@ -173,7 +174,7 @@ class _SavingsPageState extends State<SavingsPage> {
                   Vibration.vibrate(duration: 150);
                   Navigator.pop(context);
                 },
-                child: Text("Add", style: TextStyle(color: Colors.black)),
+                child: const Text("Add", style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
@@ -192,6 +193,7 @@ class _SavingsPageState extends State<SavingsPage> {
 
   void _addSaving(String title, int goal) {
     setState(() {
+      // ignore: always_specify_types
       savings.add({"title": title, "goal": goal, "saved": 0});
       _saveSavings();
     });
@@ -245,9 +247,9 @@ class _SavingsPageState extends State<SavingsPage> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> ongoingSavings =
-        savings.where((s) => s["saved"] < s["goal"]).toList();
+        savings.where((Map<String, dynamic> s) => s["saved"] < s["goal"]).toList();
     List<Map<String, dynamic>> doneSavings =
-        savings.where((s) => s["saved"] >= s["goal"]).toList();
+        savings.where((Map<String, dynamic> s) => s["saved"] >= s["goal"]).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -255,12 +257,12 @@ class _SavingsPageState extends State<SavingsPage> {
           "Your Savings",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xFF263238),
+        backgroundColor: const Color(0xFF263238),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
+            colors: <Color>[Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -268,11 +270,11 @@ class _SavingsPageState extends State<SavingsPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: ListView(
-                  children: [
-                    if (ongoingSavings.isNotEmpty) ...[
+                  children: <Widget>[
+                    if (ongoingSavings.isNotEmpty) ...<Widget>[
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
@@ -284,12 +286,12 @@ class _SavingsPageState extends State<SavingsPage> {
                           ),
                         ),
                       ),
-                      ...ongoingSavings.map((saving) {
+                      ...ongoingSavings.map((Map<String, dynamic> saving) {
                         int index = savings.indexOf(saving);
                         return _buildSavingCard(saving, index, false);
                       }),
                     ],
-                    if (doneSavings.isNotEmpty) ...[
+                    if (doneSavings.isNotEmpty) ...<Widget>[
                       const SizedBox(height: 20),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -302,7 +304,7 @@ class _SavingsPageState extends State<SavingsPage> {
                           ),
                         ),
                       ),
-                      ...doneSavings.map((saving) {
+                      ...doneSavings.map((Map<String, dynamic> saving) {
                         int index = savings.indexOf(saving);
                         return _buildSavingCard(saving, index, true);
                       }),
@@ -312,7 +314,7 @@ class _SavingsPageState extends State<SavingsPage> {
               ),
               const SizedBox(height: 10),
               Row(
-                children: [
+                children: <Widget>[
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _showCreateNewSavingDialog,
@@ -335,8 +337,9 @@ class _SavingsPageState extends State<SavingsPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
+                        // ignore: always_specify_types
                         MaterialPageRoute(
-                          builder: (context) => SavingHistoryPage(),
+                          builder: (BuildContext context) => const SavingHistoryPage(),
                         ),
                       );
                     },
@@ -376,7 +379,7 @@ class _SavingsPageState extends State<SavingsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Text(
               saving["title"],
               style: const TextStyle(
@@ -406,7 +409,7 @@ class _SavingsPageState extends State<SavingsPage> {
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 IconButton(
                   icon: const Icon(
                     Icons.edit,
@@ -436,38 +439,38 @@ class _SavingsPageState extends State<SavingsPage> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: Text(
+            title: const Text(
               "Create new Saving",
               style: TextStyle(color: Colors.white),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 TextField(
                   controller: titleController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Title",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 TextField(
                   controller: amountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Amount to save",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -477,9 +480,9 @@ class _SavingsPageState extends State<SavingsPage> {
                   );
                   Navigator.pop(context);
                 },
-                child: Text(
+                child: const Text(
                   "Create",
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                 ),
               ),
             ],
@@ -497,35 +500,35 @@ class _SavingsPageState extends State<SavingsPage> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: Text("Edit Saving", style: TextStyle(color: Colors.white)),
+            title: const Text("Edit Saving", style: TextStyle(color: Colors.white)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 TextField(
                   controller: titleController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Title",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 TextField(
                   controller: amountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Goal Amount",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -536,9 +539,9 @@ class _SavingsPageState extends State<SavingsPage> {
                   );
                   Navigator.pop(context);
                 },
-                child: Text(
+                child: const Text(
                   "Save",
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                 ),
               ),
             ],

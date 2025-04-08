@@ -12,7 +12,7 @@ class PinLoginPage extends StatefulWidget {
 }
 
 class _PinLoginPageState extends State<PinLoginPage> {
-  final List<String> _enteredPin = [];
+  final List<String> _enteredPin = <String>[];
   String? _savedPin;
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -57,13 +57,14 @@ class _PinLoginPageState extends State<PinLoginPage> {
     setState(() => _enteredPin.clear());
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text("Incorrect PIN")));
+    ).showSnackBar(const SnackBar(content: Text("Incorrect PIN")));
   }
 
   void _navigateToHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => MainPage()),
+      // ignore: always_specify_types
+      MaterialPageRoute(builder: (_) => const MainPage()),
     );
   }
 
@@ -89,7 +90,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
       debugPrint('Biometric auth error: $e');
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Biometric authentication failed")),
+        const SnackBar(content: Text("Biometric authentication failed")),
       );
     }
   }
@@ -98,7 +99,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
     return Container(
       width: 15,
       height: 15,
-      margin: EdgeInsets.symmetric(horizontal: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: filled ? Colors.blue : Colors.grey.shade300,
@@ -110,16 +111,16 @@ class _PinLoginPageState extends State<PinLoginPage> {
     return GestureDetector(
       onTap: () => _handleNumberPress(number),
       child: Container(
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white),
         ),
-        padding: EdgeInsets.all(22),
+        padding: const EdgeInsets.all(22),
         child: Center(
           child: Text(
             number,
-            style: TextStyle(fontSize: 22, color: Colors.white),
+            style: const TextStyle(fontSize: 22, color: Colors.white),
           ),
         ),
       ),
@@ -129,20 +130,20 @@ class _PinLoginPageState extends State<PinLoginPage> {
   Widget _buildBackspaceButton() {
     return GestureDetector(
       onTap: _handleBackspace,
-      child: Icon(Icons.backspace, size: 30, color: Colors.white),
+      child: const Icon(Icons.backspace, size: 30, color: Colors.white),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF263238),
+      backgroundColor: const Color(0xFF263238),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              children: [
+          children: <Widget>[
+            const Column(
+              children: <Widget>[
                 Text(
                   "Welcome to",
                   style: TextStyle(fontSize: 22, color: Colors.white),
@@ -164,44 +165,45 @@ class _PinLoginPageState extends State<PinLoginPage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: <Widget>[
+                // ignore: always_specify_types
                 ...List.generate(
                   4,
-                  (index) => _buildCircle(index < _enteredPin.length),
+                  (int index) => _buildCircle(index < _enteredPin.length),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 _buildBackspaceButton(),
               ],
             ),
             Column(
-              children: [
+              children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: ['1', '2', '3'].map((n) => _buildKey(n)).toList(),
+                  children: <String>['1', '2', '3'].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: ['4', '5', '6'].map((n) => _buildKey(n)).toList(),
+                  children: <String>['4', '5', '6'].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: ['7', '8', '9'].map((n) => _buildKey(n)).toList(),
+                  children: <String>['7', '8', '9'].map((String n) => _buildKey(n)).toList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 80),
+                  children: <Widget>[
+                    const SizedBox(width: 80),
                     _buildKey('0'),
-                    SizedBox(width: 80),
+                    const SizedBox(width: 80),
                   ],
                 ),
               ],
             ),
             Column(
-              children: [
+              children: <Widget>[
                 TextButton(
                   onPressed: _checkBiometrics,
-                  child: Text(
+                  child: const Text(
                     "Use Biometrics",
                     style: TextStyle(color: Colors.blue),
                   ),

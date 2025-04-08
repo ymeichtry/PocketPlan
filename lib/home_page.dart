@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String, String>> savingHistory = [];
+  List<Map<String, String>> savingHistory = <Map<String, String>>[];
   double totalSaved = 0.0;
 
   @override
@@ -28,7 +28,9 @@ class _HomePageState extends State<HomePage> {
     if (historyJson != null) {
       List<dynamic> decodedList = json.decode(historyJson);
       List<Map<String, String>> historyList =
+          // ignore: always_specify_types
           decodedList.map((item) {
+            // ignore: always_specify_types
             return Map<String, String>.from(item as Map);
           }).toList();
 
@@ -43,7 +45,7 @@ class _HomePageState extends State<HomePage> {
 
   double _calculateTotalSavedFromList(List<Map<String, String>> history) {
     double total = 0.0;
-    for (var entry in history) {
+    for (Map<String, String> entry in history) {
       String rawAmount = entry['amount'] ?? '0';
       String cleanAmount = rawAmount.replaceAll(RegExp(r'[^0-9.]'), '');
       double amount = double.tryParse(cleanAmount) ?? 0.0;
@@ -53,12 +55,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<BarChartGroupData> _prepareBarChartData() {
-    List<BarChartGroupData> bars = [];
+    List<BarChartGroupData> bars = <BarChartGroupData>[];
     DateTime today = DateTime.now();
 
-    Map<int, double> dailySavings = {};
+    Map<int, double> dailySavings = <int, double>{};
 
-    for (var entry in savingHistory) {
+    for (Map<String, String> entry in savingHistory) {
       DateTime entryDate = DateTime.parse(entry['date']!);
       int daysAgo = today.difference(entryDate).inDays;
 
@@ -76,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       bars.add(
         BarChartGroupData(
           x: i,
-          barRods: [
+          barRods: <BarChartRodData>[
             BarChartRodData(
               toY: dailySavings[i] ?? 0.0,
               color: Colors.blue,
@@ -93,9 +95,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
+          colors: <Color>[Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -103,25 +105,25 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text("PocketPlan", style: TextStyle(color: Colors.white)),
-          backgroundColor: Color(0xFF263238),
+          title: const Text("PocketPlan", style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color(0xFF263238),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 4,
-                color: Color(0xFFEAEAEA),
+                color: const Color(0xFFEAEAEA),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       Text(
                         "Total Saved",
                         // ignore: deprecated_member_use
@@ -131,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black.withOpacity(0.7),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         "\$${totalSaved.toStringAsFixed(2)}",
                         style: TextStyle(
@@ -144,8 +146,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Your Progress This Week",
                 style: TextStyle(
                   fontSize: 18,
@@ -153,28 +155,28 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 4,
-                color: Color(0xFFEAEAEA),
+                color: const Color(0xFFEAEAEA),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: AspectRatio(
                     aspectRatio: 1.5,
                     child: BarChart(
                       BarChartData(
-                        gridData: FlGridData(show: true),
+                        gridData: const FlGridData(show: true),
                         titlesData: FlTitlesData(
-                          topTitles: AxisTitles(
+                          topTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          rightTitles: AxisTitles(
+                          rightTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          leftTitles: AxisTitles(
+                          leftTitles: const AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
                               reservedSize: 40,
@@ -183,16 +185,16 @@ class _HomePageState extends State<HomePage> {
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              getTitlesWidget: (value, meta) {
+                              getTitlesWidget: (double value, TitleMeta meta) {
                                 DateTime today = DateTime.now();
                                 DateTime date = today.subtract(
                                   Duration(days: 6 - value.toInt()),
                                 );
                                 return Text(
                                   "${date.day}.${date.month}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
-                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                    color: Color.fromARGB(255, 0, 0, 0),
                                   ),
                                 );
                               },
@@ -204,12 +206,12 @@ class _HomePageState extends State<HomePage> {
                         barGroups:
                             _prepareBarChartData()
                                 .map(
-                                  (group) => BarChartGroupData(
+                                  (BarChartGroupData group) => BarChartGroupData(
                                     x: group.x,
                                     barRods:
                                         group.barRods
                                             .map(
-                                              (rod) => BarChartRodData(
+                                              (BarChartRodData rod) => BarChartRodData(
                                                 toY: rod.toY,
                                                 color: Colors.green[700],
                                                 width: 16,

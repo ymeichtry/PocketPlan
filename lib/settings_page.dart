@@ -59,22 +59,23 @@ class _SettingsPageState extends State<SettingsPage> {
     await showDialog(
       // ignore: use_build_context_synchronously
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          // ignore: always_specify_types
+          builder: (BuildContext context, setState) {
             return AlertDialog(
               backgroundColor: Colors.grey[850],
-              title: Text(
+              title: const Text(
                 "Change your password",
                 style: TextStyle(color: Colors.white),
               ),
               content: TextField(
                 controller: controller,
                 obscureText: !isVisible,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: "Password",
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: const TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
                     icon: Icon(
                       isVisible ? Icons.visibility : Icons.visibility_off,
@@ -85,20 +86,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 keyboardType: TextInputType.number,
                 maxLength: 4,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (value) {
+                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                onChanged: (String value) {
                   if (value.length > 4) {
                     controller.text = value.substring(0, 4);
                     controller.selection = TextSelection.fromPosition(
-                      TextPosition(offset: 4),
+                      const TextPosition(offset: 4),
                     );
                   }
                 },
               ),
-              actions: [
+              actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                  child: const Text("Cancel", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -108,16 +109,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       Navigator.pop(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Password must be 4 digits")),
+                        const SnackBar(content: Text("Password must be 4 digits")),
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Save",
-                    style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                   ),
                 ),
               ],
@@ -159,36 +160,36 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (BuildContext context) => AlertDialog(
             backgroundColor: Colors.grey[850],
-            title: Text("Change Limits", style: TextStyle(color: Colors.white)),
+            title: const Text("Change Limits", style: TextStyle(color: Colors.white)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 TextField(
                   controller: dailyController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Daily Limit",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 TextField(
                   controller: monthlyController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Monthly Limit",
                     labelStyle: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel", style: TextStyle(color: Colors.white)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -198,11 +199,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 ),
-                child: Text(
+                child: const Text(
                   "Save",
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                 ),
               ),
             ],
@@ -214,15 +215,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF263238),
+        title: const Text("Settings", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF263238),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
+            colors: <Color>[Color(0xFF004D40), Color.fromARGB(255, 54, 64, 60)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -232,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 // Password Section
                 Card(
                   elevation: 4,
@@ -240,16 +241,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  color: Color(0xFFEAEAEA),
+                  color: const Color(0xFFEAEAEA),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
+                          children: <Widget>[
+                            const Text(
                               "Password when Log in",
                               style: TextStyle(
                                 fontSize: 18,
@@ -262,7 +263,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               activeColor: Colors.white,
                               inactiveThumbColor: Colors.grey,
                               inactiveTrackColor: Colors.grey[300],
-                              activeTrackColor: Color(0xFF1E88E5),
+                              activeTrackColor: const Color(0xFF1E88E5),
                             ),
                           ],
                         ),
@@ -271,11 +272,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             alignment: Alignment.centerLeft,
                             child: TextButton(
                               onPressed: _changePasswordDialog,
-                              child: Text(
+                              child: const Text(
                                 "Change Password",
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: const Color(0xFF1E88E5),
+                                  color: Color(0xFF1E88E5),
                                 ),
                               ),
                             ),
@@ -290,28 +291,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  color: Color(0xFFEAEAEA),
+                  color: const Color(0xFFEAEAEA),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+                      children: <Widget>[
+                        const Text(
                           "Saving Limits",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text("Daily: $_dailyLimit .-"),
                         Text("Monthly: $_monthlyLimit .-"),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: _showLimitDialog,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF004D40),
-                            padding: EdgeInsets.symmetric(
+                            backgroundColor: const Color(0xFF004D40),
+                            padding: const EdgeInsets.symmetric(
                               vertical: 12,
                               horizontal: 16,
                             ),
@@ -319,7 +320,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             "Change Limits",
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
