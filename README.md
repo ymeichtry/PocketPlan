@@ -9,6 +9,8 @@ PocketPlan makes saving easy and intuitive — track goals, build habits, and ma
 
 [Visit the landing page](https://pocket-plan.vercel.app/)
 
+Grab the APK from: pocketplan_web/assets/pocketplan.apk
+
 ## Features
 - 📈 **Track Saving Goals**: Easily set and track your saving goals.
 - 💰 **Add Money Progress**: Add money to goals and see your progress instantly.
