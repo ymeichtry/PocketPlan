@@ -3,14 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _requirePassword = false;
   String _autoSaveFrequency = "Daily";
-  TextEditingController _autoSaveAmountController = TextEditingController(text: "0");
+  final TextEditingController _autoSaveAmountController = TextEditingController(text: "0");
 
   int _dailyLimit = 0;
   int _monthlyLimit = 0;
@@ -46,6 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
     bool isVisible = false;
 
 await showDialog(
+  // ignore: use_build_context_synchronously
   context: context,
   builder: (context) {
     return StatefulBuilder(
@@ -86,15 +90,16 @@ await showDialog(
               onPressed: () async {
                 if (controller.text.length == 4) {
                   await prefs.setString("userPassword", controller.text);
+                  // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password must be 4 digits")));
                 }
               },
-              child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 255, 255, 255),
               ),
+              child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
             ),
           ],
         );
@@ -167,10 +172,10 @@ await showDialog(
               _saveLimits(daily, monthly);
               Navigator.pop(context);
             },
-            child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
             style: ElevatedButton.styleFrom(
               backgroundColor: Color.fromARGB(255, 255, 255, 255),
             ),
+            child: Text("Save", style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0))),
           ),
         ],
       ),

@@ -3,7 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class SavingHistoryPage extends StatefulWidget {
+  const SavingHistoryPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SavingHistoryPageState createState() => _SavingHistoryPageState();
 }
 

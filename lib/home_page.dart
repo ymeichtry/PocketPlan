@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -119,6 +121,7 @@ Widget build(BuildContext context) {
                   children: [
                     Text(
                       "Total Saved",
+                      // ignore: deprecated_member_use
                       style: TextStyle(fontSize: 16, color: Colors.black.withOpacity(0.7)),
                     ),
                     SizedBox(height: 8),

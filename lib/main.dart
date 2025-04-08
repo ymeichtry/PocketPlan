@@ -19,7 +19,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   final bool showLogin;
 
-  MyApp({required this.showLogin});
+  const MyApp({super.key, required this.showLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MainPageState createState() => _MainPageState();
 }
 

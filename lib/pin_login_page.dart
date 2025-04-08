@@ -4,12 +4,15 @@ import 'package:pocketplan/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PinLoginPage extends StatefulWidget {
+  const PinLoginPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _PinLoginPageState createState() => _PinLoginPageState();
 }
 
 class _PinLoginPageState extends State<PinLoginPage> {
-  List<String> _enteredPin = [];
+  final List<String> _enteredPin = [];
   String? _savedPin;
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -17,7 +20,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
 void initState() {
   super.initState();
   _loadPin().then((_) {
-    _checkBiometrics(); // Trigger after loading saved PIN
+    _checkBiometrics();
   });
 }
 
@@ -82,6 +85,7 @@ Future<void> _checkBiometrics() async {
     }
   } catch (e) {
     debugPrint('Biometric auth error: $e');
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Biometric authentication failed")),
     );

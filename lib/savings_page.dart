@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pocketplan/saving_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:vibration/vibration.dart';
 
 class SavingsPage extends StatefulWidget {
+  const SavingsPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SavingsPageState createState() => _SavingsPageState();
 }
 
@@ -263,7 +265,7 @@ void _showAddMoneyDialog(int index) {
                       ...ongoingSavings.map((saving) {
                         int index = savings.indexOf(saving);
                         return _buildSavingCard(saving, index, false);
-                      }).toList(),
+                      }),
                     ],
                     if (doneSavings.isNotEmpty) ...[
                       const SizedBox(height: 20),
@@ -281,7 +283,7 @@ void _showAddMoneyDialog(int index) {
                       ...doneSavings.map((saving) {
                         int index = savings.indexOf(saving);
                         return _buildSavingCard(saving, index, true);
-                      }).toList(),
+                      }),
                     ],
                   ],
                 ),
